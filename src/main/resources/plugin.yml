@@ -1,0 +1,24 @@
+name: LTW
+version: '1.0'
+main: io.github.Lvcius.lTW.LTW
+api-version: '1.21'
+prefix: LucTw
+author: Lvcius_
+
+commands:
+  gear:
+    description: Gears player
+  gearspecial:
+    description: uses the special gear kit for special people
+    permission: "gearspecial"
+  respawn:
+    description: respawns the player
+  join:
+    description: join a team
+  leave:
+    description: leave a team
+  tpteam:
+    description: tp all members of a team to you
+    permission: "tpteam"
+  chud:
+    description: for Lispy
