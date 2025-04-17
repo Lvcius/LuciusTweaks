@@ -3,7 +3,7 @@ version: '1.0'
 main: io.github.Lvcius.lTW.LTW
 api-version: '1.21'
 prefix: LucTw
-author: Lvcius_
+author: Lvcius_, SegagagaNSpellz
 
 commands:
   gear:

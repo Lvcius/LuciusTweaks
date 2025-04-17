@@ -1,8 +1,9 @@
 package io.github.Lvcius.lTW;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 
 public class DeathListener implements Listener {
     @EventHandler
@@ -22,7 +28,11 @@ public class DeathListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeadlyDamage(EntityDamageEvent event) {
         final Player player = (Player) event.getEntity();
-        if (player.getHealth() - event.getDamage() <= 0) {
+        final PlayerInventory inv = player.getInventory();
+
+        double effectiveHealth = player.getHealth() + player.getAbsorptionAmount();
+
+        if (effectiveHealth - event.getFinalDamage() <= 0) {
             //set to spectator
             player.setGameMode(GameMode.SPECTATOR);
             Server server = Bukkit.getServer();
