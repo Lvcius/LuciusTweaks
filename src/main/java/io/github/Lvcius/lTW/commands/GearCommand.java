@@ -1,12 +1,10 @@
 package io.github.Lvcius.lTW.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +18,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,22 +91,21 @@ public class GearCommand implements TabExecutor {
         inventory.setItem(1, kbsword);
 
         //setup buffs
-        ItemStack speed = new ItemStack(Material.POTION);
-        PotionMeta speedMeta = (PotionMeta) speed.getItemMeta();
-        speedMeta.setBasePotionType(PotionType.SWIFTNESS);
-        speedMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 3600, 1), true);
-        speed.setItemMeta(speedMeta);
 
-        ItemStack strength = new ItemStack(Material.POTION);
-        PotionMeta strengthMeta = (PotionMeta) strength.getItemMeta();
-        strengthMeta.setBasePotionType(PotionType.STRENGTH);
-        strengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-        strength.setItemMeta(strengthMeta);
+        ItemStack speedstrength = new ItemStack(Material.POTION);
+        PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
+        speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
+        speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
+        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
+        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
+        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
+        speedstrength.setItemMeta(speedstrengthMeta);
 
         ItemStack regen = new ItemStack(Material.POTION);
         PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
         regenMeta.setBasePotionType(PotionType.REGENERATION);
-        regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 3600, 1), true);
+        regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
+        regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
         regen.setItemMeta(regenMeta);
 
         ItemStack fireres = new ItemStack(Material.POTION);
@@ -116,20 +114,16 @@ public class GearCommand implements TabExecutor {
         fireres.setItemMeta(fireresMeta);
 
         //give buffs
-        inventory.setItem(6, speed);
-        inventory.setItem(15, speed);
-        inventory.setItem(24, speed);
-        inventory.setItem(33, speed);
-        inventory.setItem(7, strength);
-        inventory.setItem(16, strength);
-        inventory.setItem(25, strength);
-        inventory.setItem(34, strength);
+        inventory.setItem(7, speedstrength);
+        inventory.setItem(16, speedstrength);
+        inventory.setItem(25, speedstrength);
+        inventory.setItem(34, speedstrength);
         inventory.setItem(8, regen);
         inventory.setItem(17, regen);
         inventory.setItem(26, regen);
         inventory.setItem(35, regen);
-        inventory.setItem(5, fireres);
-        inventory.setItem(32, fireres);
+        inventory.setItem(6, fireres);
+        inventory.setItem(33, fireres);
 
 
         //fill with splash health
@@ -137,13 +131,16 @@ public class GearCommand implements TabExecutor {
         PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
         healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
         health.setItemMeta(healthMeta);
-        for (int i = 0; i <= 20; i++) {
+        for (int i = 0; i <= 24; i++) {
             inventory.addItem(health);
         }
 
         //successful gear message
         player.sendMessage(ChatColor.GREEN + player.getName() + " has been geared! :)");
         player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+
+        //set gamemode
+        player.setGameMode(GameMode.ADVENTURE);
 
         return true;
     }

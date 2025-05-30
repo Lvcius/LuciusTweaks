@@ -15,6 +15,7 @@ public final class LTW extends JavaPlugin {
         getLogger().info("LTW Enabled");
         getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getCommand("gear").setExecutor(new GearCommand());
         getCommand("gearspecial").setExecutor(new GearspecialCommand());
         getCommand("respawn").setExecutor(new RespawnCommand());

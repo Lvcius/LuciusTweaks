@@ -122,22 +122,20 @@ public class GearspecialCommand implements TabExecutor {
                     inventory.setItem(1, kbsword);
 
                     //setup buffs
-                    ItemStack speed = new ItemStack(Material.POTION);
-                    PotionMeta speedMeta = (PotionMeta) speed.getItemMeta();
-                    speedMeta.setBasePotionType(PotionType.SWIFTNESS);
-                    speedMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 3600, 1), true);
-                    speed.setItemMeta(speedMeta);
-
-                    ItemStack strength = new ItemStack(Material.POTION);
-                    PotionMeta strengthMeta = (PotionMeta) strength.getItemMeta();
-                    strengthMeta.setBasePotionType(PotionType.STRENGTH);
-                    strengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-                    strength.setItemMeta(strengthMeta);
+                    ItemStack speedstrength = new ItemStack(Material.POTION);
+                    PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
+                    speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
+                    speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
+                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
+                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
+                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
+                    speedstrength.setItemMeta(speedstrengthMeta);
 
                     ItemStack regen = new ItemStack(Material.POTION);
                     PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
                     regenMeta.setBasePotionType(PotionType.REGENERATION);
-                    regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 3600, 1), true);
+                    regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
+                    regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
                     regen.setItemMeta(regenMeta);
 
                     ItemStack fireres = new ItemStack(Material.POTION);
@@ -146,17 +144,14 @@ public class GearspecialCommand implements TabExecutor {
                     fireres.setItemMeta(fireresMeta);
 
                     //give buffs
-                    inventory.setItem(6, speed);
-                    inventory.setItem(24, speed);
-                    inventory.setItem(33, speed);
-                    inventory.setItem(7, strength);
-                    inventory.setItem(25, strength);
-                    inventory.setItem(34, strength);
+                    inventory.setItem(7, speedstrength);
+                    inventory.setItem(25, speedstrength);
+                    inventory.setItem(34, speedstrength);
                     inventory.setItem(8, regen);
                     inventory.setItem(26, regen);
                     inventory.setItem(35, regen);
-                    inventory.setItem(5, fireres);
-                    inventory.setItem(32, fireres);
+                    inventory.setItem(6, fireres);
+                    inventory.setItem(33, fireres);
 
                     //setup bow
                     ItemStack bow = new ItemStack(Material.BOW);
@@ -180,9 +175,12 @@ public class GearspecialCommand implements TabExecutor {
                     PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
                     healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
                     health.setItemMeta(healthMeta);
-                    for (int i = 0; i <= 17; i++) {
+                    for (int i = 0; i <= 20; i++) {
                         inventory.addItem(health);
                     }
+
+                    //set gamemode
+                    player.setGameMode(GameMode.SURVIVAL);
 
                     //success message
                     sender.sendMessage(ChatColor.GREEN + "Geared " + args[1]);
@@ -269,22 +267,20 @@ public class GearspecialCommand implements TabExecutor {
                             inventory.setItem(1, kbsword);
 
                             //setup buffs
-                            ItemStack speed = new ItemStack(Material.POTION);
-                            PotionMeta speedMeta = (PotionMeta) speed.getItemMeta();
-                            speedMeta.setBasePotionType(PotionType.SWIFTNESS);
-                            speedMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 3600, 1), true);
-                            speed.setItemMeta(speedMeta);
-
-                            ItemStack strength = new ItemStack(Material.POTION);
-                            PotionMeta strengthMeta = (PotionMeta) strength.getItemMeta();
-                            strengthMeta.setBasePotionType(PotionType.STRENGTH);
-                            strengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-                            strength.setItemMeta(strengthMeta);
+                            ItemStack speedstrength = new ItemStack(Material.POTION);
+                            PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
+                            speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
+                            speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
+                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
+                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
+                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
+                            speedstrength.setItemMeta(speedstrengthMeta);
 
                             ItemStack regen = new ItemStack(Material.POTION);
                             PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
                             regenMeta.setBasePotionType(PotionType.REGENERATION);
-                            regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 3600, 1), true);
+                            regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
+                            regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
                             regen.setItemMeta(regenMeta);
 
                             ItemStack fireres = new ItemStack(Material.POTION);
@@ -293,17 +289,14 @@ public class GearspecialCommand implements TabExecutor {
                             fireres.setItemMeta(fireresMeta);
 
                             //give buffs
-                            inventory.setItem(6, speed);
-                            inventory.setItem(24, speed);
-                            inventory.setItem(33, speed);
-                            inventory.setItem(7, strength);
-                            inventory.setItem(25, strength);
-                            inventory.setItem(34, strength);
+                            inventory.setItem(7, speedstrength);
+                            inventory.setItem(25, speedstrength);
+                            inventory.setItem(34, speedstrength);
                             inventory.setItem(8, regen);
                             inventory.setItem(26, regen);
                             inventory.setItem(35, regen);
-                            inventory.setItem(5, fireres);
-                            inventory.setItem(32, fireres);
+                            inventory.setItem(6, fireres);
+                            inventory.setItem(33, fireres);
 
                             //setup bow
                             ItemStack bow = new ItemStack(Material.BOW);
@@ -327,9 +320,13 @@ public class GearspecialCommand implements TabExecutor {
                             PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
                             healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
                             health.setItemMeta(healthMeta);
-                            for (int i = 0; i <= 17; i++) {
+                            for (int i = 0; i <= 20; i++) {
                                 inventory.addItem(health);
                             }
+
+                            //set gamemode
+                            player.setGameMode(GameMode.SURVIVAL);
+
                         }
                     }
                     //success message

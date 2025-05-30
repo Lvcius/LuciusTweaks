@@ -2,8 +2,6 @@ package io.github.Lvcius.lTW;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,10 +9,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 
 public class DeathListener implements Listener {
@@ -27,25 +23,57 @@ public class DeathListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeadlyDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) return; // Added safety check
+
         final Player player = (Player) event.getEntity();
-        final PlayerInventory inv = player.getInventory();
+        final double finalDamage = event.getFinalDamage(); // Use built-in final damage calculation
+        final double effectiveHealth = player.getHealth() + player.getAbsorptionAmount();
 
-        double effectiveHealth = player.getHealth() + player.getAbsorptionAmount();
-
-        if (effectiveHealth - event.getFinalDamage() <= 0) {
-            //set to spectator
+        if (effectiveHealth - finalDamage <= 0) {
+            Scoreboard scoreboard = player.getScoreboard();
+            Team team = scoreboard.getPlayerTeam(player);
             player.setGameMode(GameMode.SPECTATOR);
             Server server = Bukkit.getServer();
 
-            if (event instanceof EntityDamageByEntityEvent) {
-                final Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
-                server.broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " was killed by " + ChatColor.RED + damager.getName() + ChatColor.WHITE + "!");
-                event.setCancelled(true);
+            String message = "";
+
+            if (team != null && team.getColor() != null) {
+                message = team.getColor().toString() + player.getName() + ChatColor.WHITE + " was killed by ";
+            } else {
+                message = ChatColor.WHITE + player.getName().toString() + ChatColor.WHITE + " was killed by ";
             }
+
+            if (event instanceof EntityDamageByEntityEvent && !(event.getDamageSource() instanceof Player)) {
+                Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
+                message += ChatColor.RED + damager.getName();
+            }
+
+            else if (event.getDamageSource() instanceof Player) {
+                final Player damager = ((Player) event.getDamageSource()).getPlayer();
+                Team damagerTeam = scoreboard.getPlayerTeam(damager);
+                if (damagerTeam != null && damagerTeam.getColor() != null) {
+                    message += damagerTeam.getColor().toString() + damager.displayName().toString();
+                } else {
+                    message += ChatColor.WHITE + damager.displayName().toString();
+                }
+
+            }
+
             else {
-                server.broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " was killed by " + ChatColor.RED + event.getCause() + ChatColor.WHITE + "!");
-                event.setCancelled(true);
+                message += ChatColor.WHITE + event.getCause().toString();
             }
+
+            server.broadcastMessage(message + ChatColor.WHITE + "!");
+
+            if (team != null) {
+                team.removeEntry(player.getName());
+            }
+
+            if (player.getLocation().getY() < -100) {
+                player.teleport(new Location(player.getWorld(), player.getLocation().getX(), 0, player.getLocation().getZ()));
+            }
+
+            event.setCancelled(true); // Prevent normal death handling
         }
     }
 }
