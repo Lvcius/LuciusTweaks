@@ -5,15 +5,15 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
-public class BlockBreakListener implements Listener {
+public class BlockPlaceListener implements Listener {
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockPlace(BlockPlaceEvent event) {
         Material blockType = event.getBlock().getType();
         final Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SURVIVAL) {
-            if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB && blockType != Material.BLACKSTONE_SLAB) {
+            if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB) {
                 event.setCancelled(true);
             }
         }

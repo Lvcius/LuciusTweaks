@@ -9,7 +9,10 @@ commands:
   gear:
     description: Gears player
   gearspecial:
-    description: uses the special gear kit for special people
+    description: "Usage: /gearspecial <player/team> <target>"
+    permission: "gearspecial"
+  gearwar:
+    description: "Usage: /gearwar <player/team> <target> <Combatant/Ganker>"
     permission: "gearspecial"
   respawn:
     description: respawns the player

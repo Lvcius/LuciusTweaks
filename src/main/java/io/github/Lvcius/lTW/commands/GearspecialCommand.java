@@ -47,147 +47,22 @@ public class GearspecialCommand implements TabExecutor {
             String targetchoice = args[0];
             String target = args[1];
 
+            List<Player> playerList = new ArrayList<>();
+
             //select target player
-            if (targetchoice.equals("player")) {
+            if (targetchoice.equals("player") || targetchoice.equals("Player")) {
                 //initial
-                final Player player = Bukkit.getPlayer(args[1]);
+                final Player player = Bukkit.getPlayer(target);
                 if (player == null) {
                     sender.sendMessage(ChatColor.RED + "That player does not exist!");
                 }
                 else {
-                    final PlayerInventory inventory = player.getInventory();
-
-                    //annoy players
-                    player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
-
-                    //set health, saturation, and clear potions
-                    player.setHealth(player.getMaxHealth());
-                    if (player.getFoodLevel() < 20) {
-                        player.setFoodLevel(22);
-                    }
-                    player.clearActivePotionEffects();
-
-                    //reset inventory
-                    inventory.clear();
-                    player.setFireTicks(0);
-
-                    //give gear
-                    //setup armor
-                    ItemStack helmet = new ItemStack(Material.DIAMOND_HELMET);
-                    ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-                    ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
-                    ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
-
-                    Map<Enchantment, Integer> enchantments = new HashMap<>();
-                    enchantments.put(Enchantment.UNBREAKING, 3);
-                    enchantments.put(Enchantment.PROTECTION, 4);
-                    helmet.addEnchantments(enchantments);
-                    chestplate.addEnchantments(enchantments);
-                    leggings.addEnchantments(enchantments);
-                    boots.addEnchantments(enchantments);
-
-                    //give armor
-                    inventory.setHelmet(helmet);
-                    inventory.setChestplate(chestplate);
-                    inventory.setLeggings(leggings);
-                    inventory.setBoots(boots);
-
-                    //setup swords
-                    ItemStack scythe = new ItemStack(Material.NETHERITE_AXE);
-                    ItemMeta scytheMeta = scythe.getItemMeta();
-
-                    //scythe custom dmg and atk
-                    AttributeModifier atkSpeedModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_SPEED.getKey(), -2.4, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
-                    AttributeModifier atkDamageModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE.getKey(), 6.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
-                    scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, atkSpeedModifier);
-                    scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, atkDamageModifier);
-                    scythe.setItemMeta(scytheMeta);
-
-                    ItemStack kbsword = new ItemStack(Material.DIAMOND_SWORD);
-                    ItemMeta kbMeta = kbsword.getItemMeta();
-                    kbMeta.setDisplayName("Bonk Stick");
-                    kbsword.setItemMeta(kbMeta);
-
-                    Map<Enchantment, Integer> swordenchantments = new HashMap<>();
-                    swordenchantments.put(Enchantment.UNBREAKING, 3);
-                    swordenchantments.put(Enchantment.SHARPNESS, 5);
-                    scythe.addEnchantments(swordenchantments);
-                    kbsword.addEnchantments(swordenchantments);
-                    kbsword.addEnchantment(Enchantment.KNOCKBACK, 2);
-                    kbsword.addEnchantment(Enchantment.FIRE_ASPECT, 2);
-
-                    //give swords and food
-                    inventory.setItemInOffHand(new ItemStack(Material.COOKED_BEEF, 64));
-                    inventory.setItem(0, scythe);
-                    inventory.setItem(1, kbsword);
-
-                    //setup buffs
-                    ItemStack speedstrength = new ItemStack(Material.POTION);
-                    PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
-                    speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
-                    speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
-                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
-                    speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
-                    speedstrength.setItemMeta(speedstrengthMeta);
-
-                    ItemStack regen = new ItemStack(Material.POTION);
-                    PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
-                    regenMeta.setBasePotionType(PotionType.REGENERATION);
-                    regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
-                    regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
-                    regen.setItemMeta(regenMeta);
-
-                    ItemStack fireres = new ItemStack(Material.POTION);
-                    PotionMeta fireresMeta = (PotionMeta) fireres.getItemMeta();
-                    fireresMeta.setBasePotionType(PotionType.LONG_FIRE_RESISTANCE);
-                    fireres.setItemMeta(fireresMeta);
-
-                    //give buffs
-                    inventory.setItem(7, speedstrength);
-                    inventory.setItem(25, speedstrength);
-                    inventory.setItem(34, speedstrength);
-                    inventory.setItem(8, regen);
-                    inventory.setItem(26, regen);
-                    inventory.setItem(35, regen);
-                    inventory.setItem(6, fireres);
-                    inventory.setItem(33, fireres);
-
-                    //setup bow
-                    ItemStack bow = new ItemStack(Material.BOW);
-                    Map<Enchantment, Integer> bowenchantments = new HashMap<>();
-                    bowenchantments.put(Enchantment.UNBREAKING, 3);
-                    bowenchantments.put(Enchantment.POWER, 5);
-                    bowenchantments.put(Enchantment.FLAME, 1);
-                    bowenchantments.put(Enchantment.INFINITY, 1);
-                    bow.addEnchantments(bowenchantments);
-
-                    //give misc gear
-                    inventory.setItem(10, bow);
-                    inventory.setItem(9, new ItemStack(Material.ARROW));
-                    inventory.setItem(15, new ItemStack(Material.DIAMOND_PICKAXE));
-                    inventory.setItem(16, new ItemStack(Material.REDSTONE_BLOCK, 64));
-                    inventory.setItem(17, new ItemStack(Material.COBWEB, 16));
-                    inventory.setItem(18, new ItemStack(Material.ENDER_PEARL, 6));
-
-                    //fill with splash health
-                    ItemStack health = new ItemStack(Material.SPLASH_POTION);
-                    PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
-                    healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
-                    health.setItemMeta(healthMeta);
-                    for (int i = 0; i <= 20; i++) {
-                        inventory.addItem(health);
-                    }
-
-                    //set gamemode
-                    player.setGameMode(GameMode.SURVIVAL);
-
-                    //success message
-                    sender.sendMessage(ChatColor.GREEN + "Geared " + args[1]);
+                    playerList.add(player);
+                    sender.sendMessage(ChatColor.GREEN + "Gearing " + player.getName() + "!");
                 }
             }
             //select target team
-            else if (targetchoice.equals("team")) {
+            else if (targetchoice.equals("team") || targetchoice.equals("Team")) {
                 final Player playersender = Bukkit.getPlayer(sender.getName());
                 Scoreboard scoreboard = playersender.getScoreboard();
                 Team team = scoreboard.getTeam(args[1]);
@@ -200,139 +75,145 @@ public class GearspecialCommand implements TabExecutor {
                 else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (team.hasEntry(player.getName())) {
-                            final PlayerInventory inventory = player.getInventory();
-
-                            //annoy players
-                            player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
-
-                            //set health, saturation, and clear potions
-                            player.setHealth(player.getMaxHealth());
-                            if (player.getFoodLevel() < 20) {
-                                player.setFoodLevel(22);
-                            }
-                            player.clearActivePotionEffects();
-
-                            //reset inventory
-                            inventory.clear();
-                            player.setFireTicks(0);
-
-                            //give gear
-                            //setup armor
-                            ItemStack helmet = new ItemStack(Material.DIAMOND_HELMET);
-                            ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-                            ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
-                            ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
-
-                            Map<Enchantment, Integer> enchantments = new HashMap<>();
-                            enchantments.put(Enchantment.UNBREAKING, 3);
-                            enchantments.put(Enchantment.PROTECTION, 4);
-                            helmet.addEnchantments(enchantments);
-                            chestplate.addEnchantments(enchantments);
-                            leggings.addEnchantments(enchantments);
-                            boots.addEnchantments(enchantments);
-
-                            //give armor
-                            inventory.setHelmet(helmet);
-                            inventory.setChestplate(chestplate);
-                            inventory.setLeggings(leggings);
-                            inventory.setBoots(boots);
-
-                            //setup swords
-                            ItemStack scythe = new ItemStack(Material.NETHERITE_AXE);
-                            ItemMeta scytheMeta = scythe.getItemMeta();
-
-                            //scythe custom dmg and atk
-                            AttributeModifier atkSpeedModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_SPEED.getKey(), -2.4, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
-                            AttributeModifier atkDamageModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE.getKey(), 6.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
-                            scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, atkSpeedModifier);
-                            scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, atkDamageModifier);
-                            scythe.setItemMeta(scytheMeta);
-
-                            ItemStack kbsword = new ItemStack(Material.DIAMOND_SWORD);
-                            ItemMeta kbMeta = kbsword.getItemMeta();
-                            kbMeta.setDisplayName("Bonk Stick");
-                            kbsword.setItemMeta(kbMeta);
-
-                            Map<Enchantment, Integer> swordenchantments = new HashMap<>();
-                            swordenchantments.put(Enchantment.UNBREAKING, 3);
-                            swordenchantments.put(Enchantment.SHARPNESS, 5);
-                            scythe.addEnchantments(swordenchantments);
-                            kbsword.addEnchantments(swordenchantments);
-                            kbsword.addEnchantment(Enchantment.KNOCKBACK, 2);
-                            kbsword.addEnchantment(Enchantment.FIRE_ASPECT, 2);
-
-                            //give swords and food
-                            inventory.setItemInOffHand(new ItemStack(Material.COOKED_BEEF, 64));
-                            inventory.setItem(0, scythe);
-                            inventory.setItem(1, kbsword);
-
-                            //setup buffs
-                            ItemStack speedstrength = new ItemStack(Material.POTION);
-                            PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
-                            speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
-                            speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
-                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
-                            speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
-                            speedstrength.setItemMeta(speedstrengthMeta);
-
-                            ItemStack regen = new ItemStack(Material.POTION);
-                            PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
-                            regenMeta.setBasePotionType(PotionType.REGENERATION);
-                            regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
-                            regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
-                            regen.setItemMeta(regenMeta);
-
-                            ItemStack fireres = new ItemStack(Material.POTION);
-                            PotionMeta fireresMeta = (PotionMeta) fireres.getItemMeta();
-                            fireresMeta.setBasePotionType(PotionType.LONG_FIRE_RESISTANCE);
-                            fireres.setItemMeta(fireresMeta);
-
-                            //give buffs
-                            inventory.setItem(7, speedstrength);
-                            inventory.setItem(25, speedstrength);
-                            inventory.setItem(34, speedstrength);
-                            inventory.setItem(8, regen);
-                            inventory.setItem(26, regen);
-                            inventory.setItem(35, regen);
-                            inventory.setItem(6, fireres);
-                            inventory.setItem(33, fireres);
-
-                            //setup bow
-                            ItemStack bow = new ItemStack(Material.BOW);
-                            Map<Enchantment, Integer> bowenchantments = new HashMap<>();
-                            bowenchantments.put(Enchantment.UNBREAKING, 3);
-                            bowenchantments.put(Enchantment.POWER, 5);
-                            bowenchantments.put(Enchantment.FLAME, 1);
-                            bowenchantments.put(Enchantment.INFINITY, 1);
-                            bow.addEnchantments(bowenchantments);
-
-                            //give misc gear
-                            inventory.setItem(10, bow);
-                            inventory.setItem(9, new ItemStack(Material.ARROW));
-                            inventory.setItem(15, new ItemStack(Material.DIAMOND_PICKAXE));
-                            inventory.setItem(16, new ItemStack(Material.REDSTONE_BLOCK, 64));
-                            inventory.setItem(17, new ItemStack(Material.COBWEB, 16));
-                            inventory.setItem(18, new ItemStack(Material.ENDER_PEARL, 6));
-
-                            //fill with splash health
-                            ItemStack health = new ItemStack(Material.SPLASH_POTION);
-                            PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
-                            healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
-                            health.setItemMeta(healthMeta);
-                            for (int i = 0; i <= 20; i++) {
-                                inventory.addItem(health);
-                            }
-
-                            //set gamemode
-                            player.setGameMode(GameMode.SURVIVAL);
-
+                            playerList.add(player);
                         }
                     }
                     //success message
-                    sender.sendMessage(ChatColor.GREEN + "Geared all members of team " + team.getName());
+                    sender.sendMessage(ChatColor.GREEN + "Gearing all members of team " + team.getName());
                 }
             }
+
+            for (Player player : playerList) {
+                final PlayerInventory inventory = player.getInventory();
+
+                //set health, saturation, and clear potions
+                player.setHealth(player.getMaxHealth());
+                if (player.getFoodLevel() < 20) {
+                    player.setFoodLevel(22);
+                }
+                player.clearActivePotionEffects();
+
+                //reset inventory
+                inventory.clear();
+                player.setFireTicks(0);
+
+                //give gear
+                //setup armor
+                ItemStack helmet = new ItemStack(Material.DIAMOND_HELMET);
+                ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
+                ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
+                ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
+
+                Map<Enchantment, Integer> enchantments = new HashMap<>();
+                enchantments.put(Enchantment.UNBREAKING, 3);
+                enchantments.put(Enchantment.PROTECTION, 4);
+                helmet.addEnchantments(enchantments);
+                chestplate.addEnchantments(enchantments);
+                leggings.addEnchantments(enchantments);
+                boots.addEnchantments(enchantments);
+
+                //give armor
+                inventory.setHelmet(helmet);
+                inventory.setChestplate(chestplate);
+                inventory.setLeggings(leggings);
+                inventory.setBoots(boots);
+
+                //setup swords
+                ItemStack scythe = new ItemStack(Material.NETHERITE_AXE);
+                ItemMeta scytheMeta = scythe.getItemMeta();
+
+                //scythe custom dmg and atk
+                AttributeModifier atkSpeedModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_SPEED.getKey(), -2.4, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
+                AttributeModifier atkDamageModifier = new AttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE.getKey(), 6.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HAND);
+                scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, atkSpeedModifier);
+                scytheMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, atkDamageModifier);
+                scythe.setItemMeta(scytheMeta);
+
+                ItemStack kbsword = new ItemStack(Material.DIAMOND_SWORD);
+                ItemMeta kbMeta = kbsword.getItemMeta();
+                kbMeta.setDisplayName("Bonk Stick");
+                kbsword.setItemMeta(kbMeta);
+
+                Map<Enchantment, Integer> swordenchantments = new HashMap<>();
+                swordenchantments.put(Enchantment.UNBREAKING, 3);
+                swordenchantments.put(Enchantment.SHARPNESS, 5);
+                scythe.addEnchantments(swordenchantments);
+                kbsword.addEnchantments(swordenchantments);
+                kbsword.addEnchantment(Enchantment.KNOCKBACK, 2);
+                kbsword.addEnchantment(Enchantment.FIRE_ASPECT, 2);
+
+                //give swords and food
+                inventory.setItemInOffHand(new ItemStack(Material.COOKED_BEEF, 64));
+                inventory.setItem(0, scythe);
+                inventory.setItem(1, kbsword);
+
+                //setup buffs
+                ItemStack speedstrength = new ItemStack(Material.POTION);
+                PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
+                speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
+                speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
+                speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
+                speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
+                speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
+                speedstrength.setItemMeta(speedstrengthMeta);
+
+                ItemStack regen = new ItemStack(Material.POTION);
+                PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
+                regenMeta.setBasePotionType(PotionType.REGENERATION);
+                regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
+                regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
+                regen.setItemMeta(regenMeta);
+
+                ItemStack fireres = new ItemStack(Material.POTION);
+                PotionMeta fireresMeta = (PotionMeta) fireres.getItemMeta();
+                fireresMeta.setBasePotionType(PotionType.LONG_FIRE_RESISTANCE);
+                fireres.setItemMeta(fireresMeta);
+
+                //give buffs
+                inventory.setItem(7, speedstrength);
+                inventory.setItem(25, speedstrength);
+                inventory.setItem(34, speedstrength);
+                inventory.setItem(8, regen);
+                inventory.setItem(26, regen);
+                inventory.setItem(35, regen);
+                inventory.setItem(6, fireres);
+                inventory.setItem(33, fireres);
+
+                //setup bow
+                ItemStack bow = new ItemStack(Material.BOW);
+                Map<Enchantment, Integer> bowenchantments = new HashMap<>();
+                bowenchantments.put(Enchantment.UNBREAKING, 3);
+                bowenchantments.put(Enchantment.POWER, 5);
+                bowenchantments.put(Enchantment.FLAME, 1);
+                bowenchantments.put(Enchantment.INFINITY, 1);
+                bow.addEnchantments(bowenchantments);
+
+                //give misc gear
+                inventory.setItem(10, bow);
+                inventory.setItem(9, new ItemStack(Material.ARROW));
+                inventory.setItem(15, new ItemStack(Material.DIAMOND_PICKAXE));
+                inventory.setItem(16, new ItemStack(Material.REDSTONE_BLOCK, 64));
+                inventory.setItem(17, new ItemStack(Material.COBWEB, 16));
+                inventory.setItem(18, new ItemStack(Material.ENDER_PEARL, 6));
+
+                //fill with splash health
+                ItemStack health = new ItemStack(Material.SPLASH_POTION);
+                PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
+                healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
+                health.setItemMeta(healthMeta);
+                for (int i = 0; i <= 20; i++) {
+                    inventory.addItem(health);
+                }
+
+                //set gamemode
+                player.setGameMode(GameMode.SURVIVAL);
+
+                //annoy players
+                player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+                player.sendMessage(ChatColor.GREEN + "You have been geared! :)");
+            }
+            sender.sendMessage(ChatColor.GREEN + "Gearing complete!");
+
         }
 
         return true;

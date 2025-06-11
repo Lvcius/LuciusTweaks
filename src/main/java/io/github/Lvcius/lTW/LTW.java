@@ -18,6 +18,7 @@ public final class LTW extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getCommand("gear").setExecutor(new GearCommand());
         getCommand("gearspecial").setExecutor(new GearspecialCommand());
+        getCommand("gearwar").setExecutor(new GearwarCommand());
         getCommand("respawn").setExecutor(new RespawnCommand());
         getCommand("join").setExecutor(new JoinTeamCommand());
         getCommand("leave").setExecutor(new LeaveTeamCommand());
