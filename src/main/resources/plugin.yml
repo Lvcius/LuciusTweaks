@@ -12,8 +12,7 @@ commands:
     description: "Usage: /gearspecial <player/team> <target>"
     permission: "gearspecial"
   gearwar:
-    description: "Usage: /gearwar <player/team> <target> <Combatant/Ganker>"
-    permission: "gearspecial"
+    description: "Usage: /gearwar <defender/attacker/capper>"
   respawn:
     description: respawns the player
   join:

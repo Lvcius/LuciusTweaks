@@ -22,6 +22,11 @@ public class JoinLeaveListener implements Listener {
         if (team != null) {
             team.removeEntry(player.getName());
         }
+
+        //blank
+        Team team2 = scoreboard.getTeam("blank");
+        team2.addEntry(player.getName());
+
         //clear inventory
         inventory.clear();
         //sets player health and saturation to max and clears potion effects
@@ -30,7 +35,7 @@ public class JoinLeaveListener implements Listener {
         player.clearActivePotionEffects();
         //set gamemode and tp to spawnpoint
         player.setGameMode(GameMode.ADVENTURE);
-        player.teleport(new Location(player.getWorld(), 0.5, -58, -0.5));
+        player.teleport(new Location(player.getWorld(), -477.5, -58, 273.5));
     }
 
     @EventHandler

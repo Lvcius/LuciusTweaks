@@ -18,6 +18,11 @@ public class LeaveTeamCommand implements CommandExecutor {
         //clear teams
         Scoreboard scoreboard = player.getScoreboard();
         Team team = scoreboard.getPlayerTeam(player);
+
+        //blank
+        Team team2 = scoreboard.getTeam("blank");
+        team2.addEntry(player.getName());
+
         player.sendMessage(ChatColor.WHITE + "You have left team " + team.getName() + ChatColor.WHITE + "!");
         player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
         team.removeEntry(player.getName());

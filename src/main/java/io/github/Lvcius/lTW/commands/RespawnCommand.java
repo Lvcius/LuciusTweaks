@@ -31,6 +31,10 @@ public class RespawnCommand implements CommandExecutor {
             team.removeEntry(player.getName());
         }
 
+        //blank
+        Team team2 = scoreboard.getTeam("blank");
+        team2.addEntry(player.getName());
+
         //sets player health and saturation to max and clears potion effects
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(40);
@@ -39,7 +43,7 @@ public class RespawnCommand implements CommandExecutor {
 
         //set gamemode and tp to spawnpoint
         player.setGameMode(GameMode.ADVENTURE);
-        player.teleport(new Location(player.getWorld(), 0.5, -58, -0.5));
+        player.teleport(new Location(player.getWorld(), -477.5, -58, 273.5));
 
         player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 

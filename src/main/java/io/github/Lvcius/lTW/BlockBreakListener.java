@@ -12,10 +12,10 @@ public class BlockBreakListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Material blockType = event.getBlock().getType();
         final Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL) {
-            if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB && blockType != Material.BLACKSTONE_SLAB) {
-                event.setCancelled(true);
-            }
-        }
+        //if (player.getGameMode() == GameMode.SURVIVAL) {
+            //if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB && blockType != Material.BLACKSTONE_SLAB) {
+            //    event.setCancelled(true);
+            //}
+        //}
     }
 }

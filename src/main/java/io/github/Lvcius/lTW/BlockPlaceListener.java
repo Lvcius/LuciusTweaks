@@ -12,10 +12,10 @@ public class BlockPlaceListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Material blockType = event.getBlock().getType();
         final Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL) {
-            if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB) {
-                event.setCancelled(true);
-            }
-        }
+        //if (player.getGameMode() == GameMode.SURVIVAL) {
+        //    if (blockType != Material.REDSTONE_BLOCK && blockType != Material.COBWEB) {
+        //        event.setCancelled(true);
+        //    }
+        //}
     }
 }
