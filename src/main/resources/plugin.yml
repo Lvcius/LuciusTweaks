@@ -1,5 +1,5 @@
 name: LTW
-version: '1.0'
+version: '1.3'
 main: io.github.Lvcius.lTW.LTW
 api-version: '1.21'
 prefix: LucTw

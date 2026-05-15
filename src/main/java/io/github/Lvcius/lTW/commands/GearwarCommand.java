@@ -52,9 +52,9 @@ public class GearwarCommand implements TabExecutor {
             return true;
         }
 
-        String targetchoice = "";
-        String target = "";
-        String kitType = "";
+        String targetchoice;
+        String target;
+        String kitType;
 
         //check args for target
         if (args.length == 1) {
@@ -119,7 +119,7 @@ public class GearwarCommand implements TabExecutor {
         }
 
         //CHECK FOR MISTYPE
-        if (!(kitType.toLowerCase().equals("attacker") || kitType.toLowerCase().equals("defender") || kitType.toLowerCase().equals("capper"))) {
+        if (!(kitType.equalsIgnoreCase("attacker") || kitType.equalsIgnoreCase("defender") || kitType.equalsIgnoreCase("capper"))) {
             sender.sendMessage(ChatColor.RED + "PLEASE TYPE A VALID KIT NAME");
             return true;
         }
@@ -284,12 +284,19 @@ public class GearwarCommand implements TabExecutor {
             inventory.setItem(34, speedstrength);
             inventory.setItem(35, speedstrength);
 
+            //setup Pickaxe
+            ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
+            Map<Enchantment, Integer> pickaxeEnchants = new HashMap<>();
+            pickaxeEnchants.put(Enchantment.UNBREAKING, 3);
+            pickaxeEnchants.put(Enchantment.EFFICIENCY, 5);
+            pickaxe.addEnchantments(pickaxeEnchants);
+
             //give misc
             inventory.setItem(6, new ItemStack(Material.COBWEB, 16));
             inventory.setItem(5, new ItemStack(Material.COOKED_BEEF, 32));
             inventory.setItem(4, new ItemStack(Material.TNT, 10));
             inventory.setItem(3, new ItemStack(Material.REDSTONE_BLOCK, 64));
-            inventory.setItem(2, new ItemStack(Material.DIAMOND_PICKAXE));
+            inventory.setItem(2, pickaxe);
             inventory.setItem(1, new ItemStack(Material.ENDER_PEARL, 16));
             inventory.setItem(0, scythe);
             inventory.setItemInOffHand(kbsword);
@@ -303,7 +310,7 @@ public class GearwarCommand implements TabExecutor {
 
         //KIT SPECIFIC ITEMS
         //DEFENDER
-        if (kitType.toLowerCase().equals("defender")) {
+        if (kitType.equalsIgnoreCase("defender")) {
             for (Player player : playerList) {
                 final PlayerInventory inventory = player.getInventory();
 
@@ -318,7 +325,7 @@ public class GearwarCommand implements TabExecutor {
             }
         }
         //ATTACKER
-        if (kitType.toLowerCase().equals("attacker")) {
+        if (kitType.equalsIgnoreCase("attacker")) {
             for (Player player : playerList) {
                 final PlayerInventory inventory = player.getInventory();
 
@@ -331,7 +338,7 @@ public class GearwarCommand implements TabExecutor {
             }
         }
         //CAPPER
-        if (kitType.toLowerCase().equals("capper")) {
+        if (kitType.equalsIgnoreCase("capper")) {
 
             final Player sender1 = (Player) sender;
             LandWorld landworld = api.getWorld(sender1.getWorld());

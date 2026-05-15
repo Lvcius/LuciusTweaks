@@ -188,10 +188,17 @@ public class GearspecialCommand implements TabExecutor {
                 bowenchantments.put(Enchantment.INFINITY, 1);
                 bow.addEnchantments(bowenchantments);
 
+                //setup Pickaxe
+                ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
+                Map<Enchantment, Integer> pickaxeEnchants = new HashMap<>();
+                pickaxeEnchants.put(Enchantment.UNBREAKING, 3);
+                pickaxeEnchants.put(Enchantment.EFFICIENCY, 5);
+                pickaxe.addEnchantments(pickaxeEnchants);
+
                 //give misc gear
                 inventory.setItem(10, bow);
                 inventory.setItem(9, new ItemStack(Material.ARROW));
-                inventory.setItem(15, new ItemStack(Material.DIAMOND_PICKAXE));
+                inventory.setItem(15, pickaxe);
                 inventory.setItem(16, new ItemStack(Material.REDSTONE_BLOCK, 64));
                 inventory.setItem(17, new ItemStack(Material.COBWEB, 16));
                 inventory.setItem(18, new ItemStack(Material.ENDER_PEARL, 6));
