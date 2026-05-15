@@ -20,6 +20,7 @@ public final class PlayerUtil {
         player.getInventory().clear();
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
+        player.setSaturation(20f);
         player.clearActivePotionEffects();
         player.setFireTicks(0);
     }
@@ -33,8 +34,9 @@ public final class PlayerUtil {
 
     public static void moveToBlank(Player player) {
         Scoreboard sb = player.getScoreboard();
-        Team current = sb.getPlayerTeam(player);
-        if (current != null) current.removeEntry(player.getName());
+        for (Team t : sb.getTeams()) {
+            if (t.hasEntry(player.getName())) t.removeEntry(player.getName());
+        }
         Team blank = sb.getTeam("blank");
         if (blank != null) blank.addEntry(player.getName());
     }
