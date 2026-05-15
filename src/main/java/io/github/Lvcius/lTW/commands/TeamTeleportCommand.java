@@ -14,6 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * /tpteam <teamname> — teleports all online members of a team to the command
+ * sender's location and broadcasts a server-wide notification.
+ * Requires the "tpteam" permission (defined in plugin.yml).
+ */
 public class TeamTeleportCommand implements TabExecutor {
 
     @Override
@@ -33,6 +38,8 @@ public class TeamTeleportCommand implements TabExecutor {
             return true;
         }
 
+        // iterate online players and teleport those on the team;
+        // avoids the deprecated Team#getPlayers which includes offline entries
         for (Player member : Bukkit.getOnlinePlayers()) {
             if (team.hasEntry(member.getName())) {
                 member.teleport(player.getLocation());

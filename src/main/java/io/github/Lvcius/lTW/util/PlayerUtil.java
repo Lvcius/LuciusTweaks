@@ -10,12 +10,14 @@ public final class PlayerUtil {
 
     private PlayerUtil() {}
 
+    /** Full lobby reset: clears inventory/stats, sets adventure mode, teleports to spawn. */
     public static void resetToSpawn(Player player) {
         clearPlayer(player);
         player.setGameMode(GameMode.ADVENTURE);
         player.teleport(new Location(player.getWorld(), -477.5, -58, 273.5));
     }
 
+    /** Wipes inventory and restores health, hunger, saturation, effects, and fire. */
     public static void clearPlayer(Player player) {
         player.getInventory().clear();
         player.setHealth(player.getMaxHealth());
@@ -25,6 +27,7 @@ public final class PlayerUtil {
         player.setFireTicks(0);
     }
 
+    /** Restores health/effects without clearing inventory — used when re-gearing mid-session. */
     public static void refillStats(Player player) {
         player.setHealth(player.getMaxHealth());
         if (player.getFoodLevel() < 20) player.setFoodLevel(20);
@@ -32,6 +35,12 @@ public final class PlayerUtil {
         player.setFireTicks(0);
     }
 
+    /**
+     * Removes the player from every scoreboard team they belong to, then adds
+     * them to the "blank" team (the default lobby/no-team state).
+     * Iterates all teams rather than relying on getPlayerTeam, which only
+     * returns the first match and would miss any duplicate entries.
+     */
     public static void moveToBlank(Player player) {
         Scoreboard sb = player.getScoreboard();
         for (Team t : sb.getTeams()) {

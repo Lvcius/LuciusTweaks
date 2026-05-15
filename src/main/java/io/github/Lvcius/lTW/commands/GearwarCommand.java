@@ -24,6 +24,28 @@ import java.util.List;
 import static me.angeschossen.lands.api.items.ItemType.CAPTURE_FLAG;
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+/**
+ * /gearwar <attacker|defender|capper> [player|team] [target]
+ *
+ * Gives role-specific war kits. Without a target argument the sender gears
+ * themselves; targeting others requires the "gearspecial" permission.
+ *
+ * Universal inventory layout (slots 0-35, offhand):
+ *   0  scythe          1  ender pearl x16  2  pickaxe
+ *   3  redstone x64    4  TNT x10          5  beef x32
+ *   6  cobweb x16      7  str/speed        8  regen
+ *   9-10 [kit-specific]  11-15  health x5
+ *   16-17 fire res     18-19 [kit-specific]
+ *   20-24 health x5    25-26 regen
+ *   27-28 [kit-specific]  29-33 health x5
+ *   34-35 str/speed
+ *   offhand: bonk stick
+ *
+ * Kit-specific slots:
+ *   defender:  9-11 turtle master, 18-19 health, 27 shield, 28 sand x64,  +TNT x11 (overflow)
+ *   attacker:  9 turtle master,    10 blackstone slab x64, 18 rod, 19 health, 27 shield, 28 anvil x10
+ *   capper:    9 end stone x64,    10 blackstone slab x64, 18 rod, 19 turtle, 27 cap block/shield, 28 anvil x10
+ */
 public class GearwarCommand implements TabExecutor {
 
     private final LandsIntegration api = LandsIntegration.of(LTW.getInstance());
@@ -39,6 +61,7 @@ public class GearwarCommand implements TabExecutor {
         String targetchoice;
         String target;
 
+        // single-arg form: gear yourself
         if (args.length == 1) {
             kitType = args[0];
             targetchoice = "player";
@@ -60,6 +83,7 @@ public class GearwarCommand implements TabExecutor {
             return true;
         }
 
+        // resolve target to a list of players
         List<Player> playerList = new ArrayList<>();
 
         if (targetchoice.equalsIgnoreCase("player")) {
@@ -90,7 +114,7 @@ public class GearwarCommand implements TabExecutor {
             return true;
         }
 
-        // build shared items once, outside the player loop
+        // build shared items once outside the loop — Bukkit clones on setItem
         ItemStack health = KitBuilder.buildHealthSplash();
         ItemStack speedstrength = KitBuilder.buildSpeedStrengthPotion();
         ItemStack regen = KitBuilder.buildRegenPotion();
@@ -98,6 +122,7 @@ public class GearwarCommand implements TabExecutor {
         ItemStack scythe = KitBuilder.buildScythe(Material.DIAMOND_AXE, 6.0);
         ItemStack[] armor = KitBuilder.buildDiamondArmor();
 
+        // --- universal kit (all roles) ---
         for (Player player : playerList) {
             PlayerInventory inventory = player.getInventory();
 
@@ -108,11 +133,13 @@ public class GearwarCommand implements TabExecutor {
             player.setFireTicks(0);
             player.setGameMode(GameMode.SURVIVAL);
 
+            // armor
             inventory.setHelmet(armor[0]);
             inventory.setChestplate(armor[1]);
             inventory.setLeggings(armor[2]);
             inventory.setBoots(armor[3]);
 
+            // hotbar weapons and utility
             inventory.setItem(0, scythe);
             inventory.setItem(1, new ItemStack(Material.ENDER_PEARL, 16));
             inventory.setItem(2, KitBuilder.buildPickaxe());
@@ -124,6 +151,7 @@ public class GearwarCommand implements TabExecutor {
             inventory.setItem(8, regen);
             inventory.setItemInOffHand(KitBuilder.buildBonkStick());
 
+            // potions at fixed slots (slots 9/10 and 18/19 reserved for kit-specific items)
             inventory.setItem(16, fireres);
             inventory.setItem(17, fireres);
             inventory.setItem(25, regen);
@@ -131,7 +159,7 @@ public class GearwarCommand implements TabExecutor {
             inventory.setItem(34, speedstrength);
             inventory.setItem(35, speedstrength);
 
-            // health potions at 11-15, 20-24, 29-33
+            // health splash fills rows 2-3 between the reserved pot slots (15 total)
             for (int i = 11; i <= 15; i++) inventory.setItem(i, health);
             for (int i = 20; i <= 24; i++) inventory.setItem(i, health);
             for (int i = 29; i <= 33; i++) inventory.setItem(i, health);
@@ -140,15 +168,18 @@ public class GearwarCommand implements TabExecutor {
             player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
         }
 
-        // kit-specific items
+        // --- kit-specific items ---
+
         if (kitType.equalsIgnoreCase("defender")) {
+            // three turtle masters for holding a position; extra TNT added via addItem
+            // to wherever it fits (the universal kit already used slot 4 for TNT x10)
             ItemStack turtle = KitBuilder.buildTurtleMaster();
             ItemStack shield = KitBuilder.buildShield();
             for (Player player : playerList) {
                 PlayerInventory inventory = player.getInventory();
                 inventory.setItem(9, turtle);
                 inventory.setItem(10, turtle);
-                inventory.setItem(11, turtle);
+                inventory.setItem(11, turtle); // overwrites one health pot at slot 11
                 inventory.setItem(18, health);
                 inventory.setItem(19, health);
                 inventory.setItem(27, shield);
@@ -169,6 +200,8 @@ public class GearwarCommand implements TabExecutor {
                 inventory.setItem(28, new ItemStack(Material.ANVIL, 10));
             }
         } else if (kitType.equalsIgnoreCase("capper")) {
+            // capper gets capture-flag blocks if Lands is active on this world,
+            // otherwise falls back to a shield as a placeholder
             LandWorld landworld = api.getWorld(senderPlayer.getWorld());
             ItemStack rod = KitBuilder.buildFishingRod();
             ItemStack turtle = KitBuilder.buildTurtleMaster();

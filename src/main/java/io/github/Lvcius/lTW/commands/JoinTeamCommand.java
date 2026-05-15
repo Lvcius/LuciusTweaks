@@ -17,6 +17,11 @@ import java.util.List;
 
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+/**
+ * /join <teamname> [player] — adds a player to one of the five coloured war teams.
+ * The player's previous team is removed first to prevent them appearing on two rosters.
+ * If no target is specified the sender joins themselves.
+ */
 public class JoinTeamCommand implements TabExecutor {
 
     @Override
@@ -26,6 +31,7 @@ public class JoinTeamCommand implements TabExecutor {
             return true;
         }
 
+        // resolve target: sender if no second argument, otherwise a named online player
         Player player;
         if (args.length < 2) {
             if (!(sender instanceof Player p)) {
@@ -48,6 +54,7 @@ public class JoinTeamCommand implements TabExecutor {
             return true;
         }
 
+        // remove from current team so the player is never on two rosters at once
         Team current = scoreboard.getPlayerTeam(player);
         if (current != null) current.removeEntry(player.getName());
         team.addEntry(player.getName());

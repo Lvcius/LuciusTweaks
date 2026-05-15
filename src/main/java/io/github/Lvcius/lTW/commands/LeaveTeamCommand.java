@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+/**
+ * /leave — removes the player from their current team and moves them to the
+ * "blank" lobby team. The team name is captured before the move so the
+ * confirmation message can show which team they left.
+ */
 public class LeaveTeamCommand implements CommandExecutor {
 
     @Override
@@ -20,6 +25,7 @@ public class LeaveTeamCommand implements CommandExecutor {
             return true;
         }
 
+        // capture team name before moveToBlank removes it
         Team current = player.getScoreboard().getPlayerTeam(player);
         String teamName = current != null ? current.getName() : "none";
 

@@ -1,13 +1,7 @@
 package io.github.Lvcius.lTW;
 
 import io.github.Lvcius.lTW.commands.*;
-import me.angeschossen.lands.api.LandsIntegration;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 public final class LTW extends JavaPlugin {
 
@@ -15,14 +9,15 @@ public final class LTW extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         instance = this;
-
-        // Plugin startup logic
         getLogger().info("LTW Enabled");
+
+        // register listeners
         getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+
+        // register commands
         getCommand("gear").setExecutor(new GearCommand());
         getCommand("gearspecial").setExecutor(new GearspecialCommand());
         getCommand("gearwar").setExecutor(new GearwarCommand());
@@ -34,12 +29,9 @@ public final class LTW extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
+    public void onDisable() {}
 
     public static LTW getInstance() {
         return instance;
     }
-
 }

@@ -19,6 +19,21 @@ import java.util.List;
 
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+/**
+ * /gearspecial <player|team> <target> — gives one player or an entire team the
+ * "special" war loadout: Netherite Scythe, bow with Infinity, pickaxe, cobwebs,
+ * ender pearls, and redstone blocks. Sets survival mode.
+ *
+ * Inventory layout (slots 0-35, offhand):
+ *   0  scythe          1  bonk stick      2-5   health splash x4
+ *   6  fire res        7  str/speed        8    regen
+ *   9  arrow          10  bow            11-14  health splash x4
+ *  15  pickaxe        16  redstone x64    17    cobweb x16
+ *  18  ender pearl x6 19-24 health x6    25    str/speed
+ *  26  regen          27-32 health x6    33    fire res
+ *  34  str/speed      35  regen
+ *  offhand: cooked beef x64
+ */
 public class GearspecialCommand implements TabExecutor {
 
     @Override
@@ -36,6 +51,7 @@ public class GearspecialCommand implements TabExecutor {
         String target = args[1];
         List<Player> playerList = new ArrayList<>();
 
+        // resolve target to a list of players
         if (targetchoice.equalsIgnoreCase("player")) {
             Player player = Bukkit.getPlayer(target);
             if (player == null) {
@@ -64,6 +80,7 @@ public class GearspecialCommand implements TabExecutor {
             return true;
         }
 
+        // build shared potion instances once; Bukkit clones on setItem so reuse is safe
         ItemStack speedstrength = KitBuilder.buildSpeedStrengthPotion();
         ItemStack regen = KitBuilder.buildRegenPotion();
         ItemStack fireres = KitBuilder.buildFireResPotion();
@@ -78,37 +95,44 @@ public class GearspecialCommand implements TabExecutor {
             player.clearActivePotionEffects();
             player.setFireTicks(0);
 
+            // armor
             ItemStack[] armor = KitBuilder.buildDiamondArmor();
             inventory.setHelmet(armor[0]);
             inventory.setChestplate(armor[1]);
             inventory.setLeggings(armor[2]);
             inventory.setBoots(armor[3]);
 
+            // bow with Infinity so the single arrow in slot 9 never runs out
             ItemStack bow = new ItemStack(Material.BOW);
             bow.addEnchantment(org.bukkit.enchantments.Enchantment.UNBREAKING, 3);
             bow.addEnchantment(org.bukkit.enchantments.Enchantment.POWER, 5);
             bow.addEnchantment(org.bukkit.enchantments.Enchantment.FLAME, 1);
             bow.addEnchantment(org.bukkit.enchantments.Enchantment.INFINITY, 1);
 
+            // weapons and tools
             inventory.setItem(0, KitBuilder.buildScythe(Material.NETHERITE_AXE, 6.2));
             inventory.setItem(1, KitBuilder.buildBonkStick());
             inventory.setItemInOffHand(new ItemStack(Material.COOKED_BEEF, 64));
-            inventory.setItem(6, fireres);
-            inventory.setItem(7, speedstrength);
-            inventory.setItem(8, regen);
-            inventory.setItem(9, new ItemStack(Material.ARROW));
+            inventory.setItem(9, new ItemStack(Material.ARROW));  // required for Infinity to work
             inventory.setItem(10, bow);
             inventory.setItem(15, KitBuilder.buildPickaxe());
+
+            // utility blocks
             inventory.setItem(16, new ItemStack(Material.REDSTONE_BLOCK, 64));
             inventory.setItem(17, new ItemStack(Material.COBWEB, 16));
             inventory.setItem(18, new ItemStack(Material.ENDER_PEARL, 6));
+
+            // potions at fixed slots
+            inventory.setItem(6, fireres);
+            inventory.setItem(7, speedstrength);
+            inventory.setItem(8, regen);
             inventory.setItem(25, speedstrength);
             inventory.setItem(26, regen);
             inventory.setItem(33, fireres);
             inventory.setItem(34, speedstrength);
             inventory.setItem(35, regen);
 
-            // fill remaining slots with splash health (slots 2-5, 11-14, 19-24, 27-32)
+            // fill remaining slots with splash health (20 total)
             for (int i = 2; i <= 5; i++) inventory.setItem(i, health);
             for (int i = 11; i <= 14; i++) inventory.setItem(i, health);
             for (int i = 19; i <= 24; i++) inventory.setItem(i, health);

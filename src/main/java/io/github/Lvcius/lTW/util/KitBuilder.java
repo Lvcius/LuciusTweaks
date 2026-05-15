@@ -17,11 +17,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+/** Factory for all reusable kit items shared across gear commands. */
 public final class KitBuilder {
 
     private KitBuilder() {}
 
-    /** Returns [helmet, chestplate, leggings, boots] */
+    /** Returns [helmet, chestplate, leggings, boots], all with Unbreaking III + Protection IV. */
     public static ItemStack[] buildDiamondArmor() {
         Material[] pieces = {
             Material.DIAMOND_HELMET,
@@ -38,6 +39,7 @@ public final class KitBuilder {
         return armor;
     }
 
+    /** Standard diamond sword: Unbreaking III, Sharpness V, Fire Aspect II. */
     public static ItemStack buildRegSword() {
         ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
         sword.addEnchantment(Enchantment.UNBREAKING, 3);
@@ -46,6 +48,7 @@ public final class KitBuilder {
         return sword;
     }
 
+    /** High-knockback sword for launching players; same enchants as reg sword plus Knockback II. */
     public static ItemStack buildBonkStick() {
         ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta meta = sword.getItemMeta();
@@ -58,6 +61,12 @@ public final class KitBuilder {
         return sword;
     }
 
+    /**
+     * Slow-swinging axe with high damage — the Scythe.
+     * Attribute modifiers override the item's default attack stats:
+     *   -2.4 attack speed (ADD_NUMBER stacks on the base, making it very slow)
+     *   +damageBonus attack damage (Netherite axe gets +6.2, Diamond axe gets +6.0)
+     */
     public static ItemStack buildScythe(Material material, double damageBonus) {
         ItemStack scythe = new ItemStack(material);
         ItemMeta meta = scythe.getItemMeta();
@@ -74,6 +83,10 @@ public final class KitBuilder {
         return scythe;
     }
 
+    /**
+     * Strength II (3 min) + Speed II (3.75 min) combo potion.
+     * Slowness II (30 sec) is intentional — brief movement penalty after drinking.
+     */
     public static ItemStack buildSpeedStrengthPotion() {
         ItemStack potion = new ItemStack(Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
@@ -86,6 +99,7 @@ public final class KitBuilder {
         return potion;
     }
 
+    /** Regeneration I (3.3 min) potion; brief slowness penalty after drinking. */
     public static ItemStack buildRegenPotion() {
         ItemStack potion = new ItemStack(Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
@@ -96,6 +110,7 @@ public final class KitBuilder {
         return potion;
     }
 
+    /** Long Fire Resistance potion (~8 min). */
     public static ItemStack buildFireResPotion() {
         ItemStack potion = new ItemStack(Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
@@ -104,6 +119,7 @@ public final class KitBuilder {
         return potion;
     }
 
+    /** Splash Instant Health II — main combat healing item. */
     public static ItemStack buildHealthSplash() {
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
@@ -112,6 +128,7 @@ public final class KitBuilder {
         return potion;
     }
 
+    /** Splash Turtle Master — high defence/slowness for tanking pushes. */
     public static ItemStack buildTurtleMaster() {
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
@@ -120,6 +137,7 @@ public final class KitBuilder {
         return potion;
     }
 
+    /** Diamond pickaxe with Unbreaking III + Efficiency V for breaking through defences. */
     public static ItemStack buildPickaxe() {
         ItemStack pick = new ItemStack(Material.DIAMOND_PICKAXE);
         pick.addEnchantment(Enchantment.UNBREAKING, 3);
@@ -127,6 +145,7 @@ public final class KitBuilder {
         return pick;
     }
 
+    /** Fishing rod used for pulling enemies off ledges or out of position. */
     public static ItemStack buildFishingRod() {
         ItemStack rod = new ItemStack(Material.FISHING_ROD);
         ItemMeta meta = rod.getItemMeta();
@@ -136,6 +155,7 @@ public final class KitBuilder {
         return rod;
     }
 
+    /** Red legion-themed shield with layered banner patterns. */
     public static ItemStack buildShield() {
         ItemStack shield = new ItemStack(Material.SHIELD);
         BlockStateMeta meta = (BlockStateMeta) shield.getItemMeta();

@@ -10,6 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+/**
+ * /respawn — manual lobby reset. Strips all team membership, clears inventory,
+ * restores stats, and teleports the player to spawn in adventure mode.
+ * Useful when a player needs to re-enter the lobby without disconnecting.
+ */
 public class RespawnCommand implements CommandExecutor {
 
     @Override
