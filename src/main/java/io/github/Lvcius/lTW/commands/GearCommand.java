@@ -1,163 +1,79 @@
 package io.github.Lvcius.lTW.commands;
 
+import io.github.Lvcius.lTW.util.KitBuilder;
 import org.bukkit.*;
-import org.bukkit.Color;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
 public class GearCommand implements TabExecutor {
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(commandSender instanceof Player)) {
-            //check for player
+        if (!(commandSender instanceof Player player)) {
             commandSender.sendMessage(ChatColor.RED + "You must be a player to use this command!");
+            return true;
         }
 
-        //initial
-        final Player player = (Player) commandSender;
-        final PlayerInventory inventory = player.getInventory();
-
-        //set health, saturation, and clear potions
-        player.setHealth(player.getMaxHealth());
-        if (player.getFoodLevel() < 20) {
-            player.setFoodLevel(22);
-        }
-        player.clearActivePotionEffects();
-
-        //reset inventory
+        PlayerInventory inventory = player.getInventory();
         inventory.clear();
-
+        player.setHealth(player.getMaxHealth());
+        if (player.getFoodLevel() < 20) player.setFoodLevel(20);
+        player.clearActivePotionEffects();
         player.setFireTicks(0);
 
-        //setup armor
-        ItemStack helmet = new ItemStack(Material.DIAMOND_HELMET);
-        ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-        ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
-        ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
+        ItemStack[] armor = KitBuilder.buildDiamondArmor();
+        inventory.setHelmet(armor[0]);
+        inventory.setChestplate(armor[1]);
+        inventory.setLeggings(armor[2]);
+        inventory.setBoots(armor[3]);
 
-        Map<Enchantment, Integer> enchantments = new HashMap<>();
-        enchantments.put(Enchantment.UNBREAKING, 3);
-        enchantments.put(Enchantment.PROTECTION, 4);
-        helmet.addEnchantments(enchantments);
-        chestplate.addEnchantments(enchantments);
-        leggings.addEnchantments(enchantments);
-        boots.addEnchantments(enchantments);
-
-        //give armor
-        inventory.setHelmet(helmet);
-        inventory.setChestplate(chestplate);
-        inventory.setLeggings(leggings);
-        inventory.setBoots(boots);
-
-        //setup swords
-        ItemStack regsword = new ItemStack(Material.DIAMOND_SWORD);
-        ItemStack kbsword = new ItemStack(Material.DIAMOND_SWORD);
-        ItemMeta kbMeta = kbsword.getItemMeta();
-        kbMeta.setDisplayName("Bonk Stick");
-        kbsword.setItemMeta(kbMeta);
-
-        Map<Enchantment, Integer> swordenchantments = new HashMap<>();
-        swordenchantments.put(Enchantment.UNBREAKING, 3);
-        swordenchantments.put(Enchantment.SHARPNESS, 5);
-        swordenchantments.put(Enchantment.FIRE_ASPECT, 2);
-        regsword.addEnchantments(swordenchantments);
-        kbsword.addEnchantments(swordenchantments);
-        kbsword.addEnchantment(Enchantment.KNOCKBACK, 2);
-
-        //give swords and food
+        inventory.setItem(0, KitBuilder.buildRegSword());
+        inventory.setItem(1, KitBuilder.buildBonkStick());
         inventory.setItemInOffHand(new ItemStack(Material.COOKED_BEEF, 64));
-        inventory.setItem(0, regsword);
-        inventory.setItem(1, kbsword);
 
-        //setup buffs
+        ItemStack speedstrength = KitBuilder.buildSpeedStrengthPotion();
+        ItemStack regen = KitBuilder.buildRegenPotion();
+        ItemStack fireres = KitBuilder.buildFireResPotion();
+        ItemStack health = KitBuilder.buildHealthSplash();
 
-        ItemStack speedstrength = new ItemStack(Material.POTION);
-        PotionMeta speedstrengthMeta = (PotionMeta) speedstrength.getItemMeta();
-        speedstrengthMeta.setColor(Color.fromRGB(255, 0, 60));
-        speedstrengthMeta.setDisplayName(ChatColor.RESET + "Strength/Speed");
-        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 3600, 1), true);
-        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 4500, 1), true);
-        speedstrengthMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 600, 1), true);
-        speedstrength.setItemMeta(speedstrengthMeta);
-
-        ItemStack regen = new ItemStack(Material.POTION);
-        PotionMeta regenMeta = (PotionMeta) regen.getItemMeta();
-        regenMeta.setBasePotionType(PotionType.REGENERATION);
-        regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 4000, 0), true);
-        regenMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 400, 0), true);
-        regen.setItemMeta(regenMeta);
-
-        ItemStack fireres = new ItemStack(Material.POTION);
-        PotionMeta fireresMeta = (PotionMeta) fireres.getItemMeta();
-        fireresMeta.setBasePotionType(PotionType.LONG_FIRE_RESISTANCE);
-        fireres.setItemMeta(fireresMeta);
-
-        //give buffs
-        inventory.setItem(7, speedstrength);
-        inventory.setItem(16, speedstrength);
-        inventory.setItem(25, speedstrength);
-        inventory.setItem(34, speedstrength);
-        inventory.setItem(8, regen);
-        inventory.setItem(17, regen);
-        inventory.setItem(26, regen);
-        inventory.setItem(35, regen);
         inventory.setItem(6, fireres);
+        inventory.setItem(7, speedstrength);
+        inventory.setItem(8, regen);
+        inventory.setItem(16, speedstrength);
+        inventory.setItem(17, regen);
+        inventory.setItem(25, speedstrength);
+        inventory.setItem(26, regen);
         inventory.setItem(33, fireres);
+        inventory.setItem(34, speedstrength);
+        inventory.setItem(35, regen);
 
+        // fill remaining slots with splash health (slots 2-5, 9-15, 18-24, 27-32)
+        for (int i = 2; i <= 5; i++) inventory.setItem(i, health);
+        for (int i = 9; i <= 15; i++) inventory.setItem(i, health);
+        for (int i = 18; i <= 24; i++) inventory.setItem(i, health);
+        for (int i = 27; i <= 32; i++) inventory.setItem(i, health);
 
-        //fill with splash health
-        ItemStack health = new ItemStack(Material.SPLASH_POTION);
-        PotionMeta healthMeta = (PotionMeta) health.getItemMeta();
-        healthMeta.setBasePotionType(PotionType.STRONG_HEALING);
-        health.setItemMeta(healthMeta);
-        for (int i = 0; i <= 24; i++) {
-            inventory.addItem(health);
-        }
-
-        //successful gear message
+        player.setGameMode(GameMode.ADVENTURE);
         player.sendMessage(ChatColor.GREEN + player.getName() + " has been geared! :)");
         player.playSound(player, ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
-
-        //set gamemode
-        player.setGameMode(GameMode.ADVENTURE);
 
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender,
-                                                @NotNull Command command,
-                                                @NotNull String label,
-                                                @NotNull String[] args) {
-        final List<String> completions = new ArrayList<>();
-        if (args.length == 1) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                completions.add(p.getName());
-            }
-            StringUtil.copyPartialMatches(args[0], List.of(), completions);
-            return completions;
-        }
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         return List.of();
     }
 }
