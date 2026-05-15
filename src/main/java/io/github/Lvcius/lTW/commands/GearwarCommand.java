@@ -148,7 +148,8 @@ public class GearwarCommand implements TabExecutor {
                 PlayerInventory inventory = player.getInventory();
                 inventory.setItem(9, turtle);
                 inventory.setItem(10, turtle);
-                inventory.setItem(18, turtle);
+                inventory.setItem(11, turtle);
+                inventory.setItem(18, health);
                 inventory.setItem(19, health);
                 inventory.setItem(27, shield);
                 inventory.setItem(28, new ItemStack(Material.SAND, 64));
